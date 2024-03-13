@@ -1,0 +1,15 @@
+{
+  "name": "ramp_script",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/btoa": "^1.2.5",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "btoa": "^1.2.1"
+  }
+}
