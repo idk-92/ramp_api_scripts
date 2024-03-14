@@ -1,5 +1,14 @@
 import btoa from "btoa";
 import type { ApiResponse } from "./transactions";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { rampTransactions } from "./drizzle/schema";
+import { sql } from "drizzle-orm/sql/sql";
+
+const connectionString = process.env.POSTGRES_URL;
+if (!connectionString) {
+  throw new Error("POSTGRES_URL is not set");
+}
 
 // console.log(val)
 // bru.setVar('RAMP_TOKEN',response);
@@ -39,7 +48,7 @@ const data: {
 } = (await response.json()) as any;
 
 const token = data?.access_token;
-const url = "https://api.ramp.com/developer/v1/transactions?page_size=3";
+const url = "https://api.ramp.com/developer/v1/transactions";
 
 const options = {
   headers: {
@@ -47,84 +56,84 @@ const options = {
     Authorization: `Bearer ${token}`,
   },
 };
+let transactionRes: Response | undefined;
+try {
+  transactionRes = await fetch(url, options);
+  console.log("🚀🚀 ~ transactionRes:", transactionRes);
+} catch (err) {
+  console.error("Error fetching transactions");
+  console.error(err);
+}
 
-const transactionRes = await fetch(url, options);
+const result: ApiResponse = (await transactionRes?.json()) as ApiResponse;
 
-const result: ApiResponse = (await transactionRes.json()) as ApiResponse;
-result.data[0].merchant_name
+const client = postgres(connectionString);
+const db = drizzle(client);
+type NewTransaction = typeof rampTransactions.$inferInsert;
 
+// @ts-expect-error
+const newTransactionsList: NewTransaction[] = result?.data.map(
+  (transaction, i) => {
+    const {
+      id,
+      merchant_name,
+      user_transaction_time,
+      sk_category_name,
 
+      merchant_descriptor,
+      card_holder,
 
+      currency_code,
+      merchant_category_code_description,
+      amount,
 
-result.data.forEach((transaction) => {
-  const {
-    id,
-    merchant_name,
-    user_transaction_time,
-    sk_category_name,
-    accounting_categories,
-    card_id,
-    merchant_category_code,
-    synced_at,
-    sk_category_id,
-    policy_violations,
-    merchant_descriptor,
-    card_holder,
-    accounting_field_selections,
-    disputes,
-    currency_code,
-    merchant_category_code_description,
-    amount,
-    line_items,
-    merchant_id,
-    memo,
-    state,
-    settlement_date,
-    original_transaction_amount,
-  } = transaction;
+      memo,
+      state,
+      settlement_date,
+    } = transaction;
 
-  // Use the parsed transaction fields here
+    // Use the parsed transaction fields here
 
-  const cardHolderName = `${card_holder.first_name} ${card_holder.last_name}`;
-  const string = '1'
-  const obj = {}
-  const number = `${obj}`
+    return {
+      rampId: id,
+      merchantName: merchant_name,
+      userTransactionTime: user_transaction_time,
+      skCategoryName: sk_category_name,
+      merchantDescriptor: merchant_descriptor,
+      cardHolder: `${card_holder.first_name} ${card_holder.last_name}`,
+      merchantCategoryCodeDescription: merchant_category_code_description,
+      amount: amount,
+      currencyCode: currency_code,
+      memo: memo,
+      state: state,
+      settlementDate: settlement_date,
+      locationName: card_holder.location_name,
+      departmentName: card_holder.department_name,
+    };
+  }
+);
 
-  // insert into db statements
+const batchInsertTransaction = async (trans: NewTransaction[]) => {
+  const res = await db
+    .insert(rampTransactions)
+    .values(trans)
+    .onConflictDoUpdate({
+      target: [rampTransactions.rampId],
+      set: {
+        amount: sql`excluded.amount`,
+        memo: sql`excluded.memo`,
+        settlementDate: sql`excluded.settlement_date`,
+        userTransactionTime: sql`excluded.user_transaction_time`,
+        merchantCategoryCodeDescription: sql`excluded.merchant_category_code_description`,
+        merchantName: sql`excluded.merchant_name`,
+        state: sql`excluded.state`,
+      },
+    });
+};
+try {
+  await batchInsertTransaction(newTransactionsList);
+} catch (err) {
+  console.error(err);
+}
 
-  return;
-});
-// id
-// merchant_name
-// user_transaction_time
-// sk_category_name
-// accounting_categories
-// card_id
-// merchant_category_code
-// synced_at
-// sk_category_id
-// policy_violations
-// merchant_descriptor
-// card_holder
-// accounting_field_selections
-// disputes
-// currency_code
-// merchant_category_code_description
-// amount
-// line_items
-// merchant_id
-// memo
-// state
-// settlement_date
-// original_transaction_amount
-// Handle the result of the POST request
-
-// result.data;
-// console.log("🚀🚀 ~ result.data:", result.data);
-
-
-
-[]
-{ 1:'a',2:'b' } 
-{1:{}}
-
+process.exit(0);
