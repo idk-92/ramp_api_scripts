@@ -2,9 +2,7 @@ on:
   workflow_dispatch:
 
   schedule:
-    on:
-      schedule:
-        - cron: "0 0 * * *"
+    - cron: "0 0 * * *"
 
 jobs:
   cache-and-install:
@@ -30,4 +28,3 @@ jobs:
           RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
           RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-
