@@ -6,6 +6,8 @@ import { rampTransactions } from "./drizzle/schema";
 import { sql } from "drizzle-orm/sql/sql";
 
 const connectionString = process.env.POSTGRES_URL;
+const rampClientId = process.env.RAMP_CLIENT_ID;
+const rampClientSecret = process.env.RAMP_CLIENT_SECRET;
 if (!connectionString) {
   throw new Error("POSTGRES_URL is not set");
 }
@@ -15,9 +17,8 @@ if (!connectionString) {
 
 async function getRampToken() {
   const endpoint = "https://api.ramp.com/developer/v1/token";
-  const clientId = "ramp_id_5rdHpqWDykN9yhcNlza7MKH1ciOSoK7ddKKTh3Nl";
-  const clientSecret =
-    "ramp_sec_Vwh49ScJ6ZdDN6v5sTaTxgGvzSLOreBeWlK5wkTWxWZG2vve";
+  const clientId = rampClientId;
+  const clientSecret = rampClientSecret;
 
   const b64header = `Basic ${btoa(`${clientId}:${clientSecret}`)}`;
 
@@ -59,7 +60,7 @@ const options = {
 let transactionRes: Response | undefined;
 try {
   transactionRes = await fetch(url, options);
-  console.log("🚀🚀 ~ transactionRes:", transactionRes);
+  console.log("🚀🚀 ~ transactionRes is ok", transactionRes.ok);
 } catch (err) {
   console.error("Error fetching transactions");
   console.error(err);
@@ -134,6 +135,7 @@ try {
   await batchInsertTransaction(newTransactionsList);
 } catch (err) {
   console.error(err);
+  process.exitCode = 1;
 }
 
-process.exit(0);
+console.log("done!");
