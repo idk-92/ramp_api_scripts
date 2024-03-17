@@ -2,6 +2,9 @@
   "name": "ramp_script",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "main": "bun run index.ts"
+  },
   "devDependencies": {
     "@types/btoa": "^1.2.5",
     "@types/bun": "latest",

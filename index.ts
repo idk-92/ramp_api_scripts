@@ -139,3 +139,4 @@ try {
 }
 
 console.log("done!");
+process.exit();
