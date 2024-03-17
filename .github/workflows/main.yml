@@ -13,18 +13,23 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
+      - run: bun install
 
       - name: Cache bun installs
         uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-${{ matrix.bun }}-bun-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.bun }}-bun-
+          restore-keys: ${{ runner.os }}-${{ matrix.bun }}-bun-
 
-      - name: Run script
-        run: bun run main
+      - run: bun run index.ts
         env:
           RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
           RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+      # - name: Run script
+      #   run: bun run main
+      #   env:
+      #     RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
+      #     RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}
+      #     POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
