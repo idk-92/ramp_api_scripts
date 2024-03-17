@@ -23,7 +23,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.bun }}-bun-
 
       - name: Run script
-        run: bun run index.ts
+        run: bun run ./index.ts
         env:
           RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
           RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}
