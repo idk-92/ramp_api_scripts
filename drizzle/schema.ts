@@ -1,27 +1,89 @@
 import {
   pgTable,
-  foreignKey,
-  unique,
   pgEnum,
   uuid,
-  timestamp,
-  text,
-  bigint,
-  serial,
-  varchar,
-  date,
   numeric,
-  integer,
-  doublePrecision,
+  text,
+  timestamp,
+  date,
   boolean,
-  index,
-  real,
-  jsonb,
-  time,
   pgSchema,
-  primaryKey,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+
+export const keyStatus = pgEnum("key_status", [
+  "default",
+  "valid",
+  "invalid",
+  "expired",
+]);
+export const keyType = pgEnum("key_type", [
+  "aead-ietf",
+  "aead-det",
+  "hmacsha512",
+  "hmacsha256",
+  "auth",
+  "shorthash",
+  "generichash",
+  "kdf",
+  "secretbox",
+  "secretstream",
+  "stream_xchacha20",
+]);
+export const factorType = pgEnum("factor_type", ["totp", "webauthn"]);
+export const factorStatus = pgEnum("factor_status", ["unverified", "verified"]);
+export const aalLevel = pgEnum("aal_level", ["aal1", "aal2", "aal3"]);
+export const codeChallengeMethod = pgEnum("code_challenge_method", [
+  "s256",
+  "plain",
+]);
+export const actionType = pgEnum("actionType", [
+  "BREAK",
+  "CHECK_IN",
+  "CHECK_OUT",
+  "ITEM",
+]);
+export const employeeLogStatus = pgEnum("employee_log_status", [
+  "NEEDS_VERIFICATION",
+  "APPROVED",
+  "REJECTED",
+  "UNKNOWN",
+  "CONFIRMED_BY_USER",
+]);
+export const availablePositions = pgEnum("Available Positions", [
+  "Customer Relations Specialist (CRS)",
+  "Plant Manager",
+  "Assistant Plant Manager",
+  "Finisher (DC)",
+  "Store Manager",
+  "Finisher (L)",
+  "Central CRS",
+  "Washer",
+  "Production Support",
+  "District Manager",
+  "Dry Cleaner",
+  "Driver",
+  "Custodian",
+  "CEO",
+  "Chief Engineer",
+  "SVP, Retail",
+  "Executive Admin",
+  "SVP, Ops",
+]);
+export const barcodeType = pgEnum("barcodeType", [
+  "EMPLOYEE",
+  "ACTION",
+  "HOTEL",
+  "ITEM",
+  "CUSTOMER",
+]);
+export const requestStatus = pgEnum("request_status", [
+  "PENDING",
+  "SUCCESS",
+  "ERROR",
+]);
+
+export const accounting = pgSchema("accounting");
 
 export const bills = pgTable("bills", {
   id: uuid("id").primaryKey().notNull(),
@@ -48,4 +110,28 @@ export const bills = pgTable("bills", {
   vendorName: text("vendor_name"),
   vendorType: text("vendor_type"),
   accountingLabels: text("accounting_labels").array(),
+});
+
+export const ynabTransactions = pgTable("ynab_transactions", {
+  id: uuid("id").primaryKey().notNull(),
+  date: date("date"),
+  amount: numeric("amount", { precision: 10, scale: 2 }),
+  memo: text("memo"),
+  cleared: text("cleared"),
+  approved: boolean("approved"),
+  flagColor: text("flag_color"),
+  accountId: text("account_id"),
+  payeeId: text("payee_id"),
+  categoryId: text("category_id"),
+  transferAccountId: text("transfer_account_id"),
+  transferTransactionId: text("transfer_transaction_id"),
+  matchedTransactionId: text("matched_transaction_id"),
+  importId: text("import_id"),
+  importPayeeName: text("import_payee_name"),
+  importPayeeNameOriginal: text("import_payee_name_original"),
+  debtTransactionType: text("debt_transaction_type"),
+  deleted: boolean("deleted"),
+  accountName: text("account_name"),
+  payeeName: text("payee_name"),
+  categoryName: text("category_name"),
 });

@@ -16,6 +16,7 @@
   "dependencies": {
     "btoa": "^1.2.1",
     "drizzle-orm": "^0.30.1",
-    "postgres": "^3.4.3"
+    "postgres": "^3.4.3",
+    "ynab": "^2.2.0"
   }
 }
