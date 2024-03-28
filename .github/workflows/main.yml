@@ -5,7 +5,7 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  cache-and-install:
+  cache-install-run:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,9 +30,3 @@ jobs:
           RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
           RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-      # - name: Run script
-      #   run: bun run main
-      #   env:
-      #     RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
-      #     RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}
-      #     POSTGRES_URL: ${{ secrets.POSTGRES_URL }}

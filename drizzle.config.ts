@@ -12,5 +12,5 @@ export default {
   dbCredentials: {
     connectionString,
   },
-  schemaFilter: ["accounting"],
+  schemaFilter: ["accounting", "public"],
 } satisfies Config;
