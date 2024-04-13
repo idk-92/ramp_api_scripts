@@ -98,10 +98,8 @@ const newTransactionsList: NewBillsRecord[] = (result?.data as BillsData[]).map(
       status,
       vendor,
     } = record;
-    console.log(
-      "🚀🚀 ~ constnewTransactionsList:BillsData[]=result?.data.map ~ record:",
-      record
-    );
+    console.log("🚀🚀 ~ record:", record);
+
     const accounting_labels = accounting_field_selections.map(
       (sel) => sel.name
     );
@@ -110,7 +108,7 @@ const newTransactionsList: NewBillsRecord[] = (result?.data as BillsData[]).map(
 
     return {
       id,
-      amount: String(amount?.amount),
+      amount: amount?.amount ? String(amount?.amount) : undefined,
       currencyCode: amount?.currency_code,
       createdAt: created_at,
       dueAt: due_at,
@@ -122,7 +120,9 @@ const newTransactionsList: NewBillsRecord[] = (result?.data as BillsData[]).map(
       paymentEffectiveDate: payment?.effective_date,
       paymentDate: payment?.payment_date,
       paymentMethod: payment?.payment_method,
-      paymentAmount: String(payment?.amount.amount),
+      paymentAmount: payment?.amount?.amount
+        ? String(payment?.amount.amount)
+        : undefined,
       vendorName: vendor?.remote_name,
       vendorType: vendor?.type,
       accountingLabels: accounting_labels,
@@ -173,6 +173,7 @@ const batchInsertTransaction = async (trans: NewBillsRecord[]) => {
       ]),
     });
 };
+
 try {
   await batchInsertTransaction(newTransactionsList);
 } catch (err) {

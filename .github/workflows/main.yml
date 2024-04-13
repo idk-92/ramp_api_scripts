@@ -25,7 +25,17 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.bun }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: ${{ runner.os }}-${{ matrix.bun }}-bun-
 
-      - run: bun run index.ts
+      - run: bun run ramp_transactions.ts
+        env:
+          RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
+          RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+      - run: bun run ynab.ts
+        env:
+          RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
+          RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+      - run: bun run bills.ts
         env:
           RAMP_CLIENT_ID: ${{ secrets.RAMP_CLIENT_ID }}
           RAMP_CLIENT_SECRET: ${{ secrets.RAMP_CLIENT_SECRET }}

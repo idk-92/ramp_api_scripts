@@ -72,7 +72,6 @@ const client = postgres(connectionString);
 const db = drizzle(client);
 type NewTransaction = typeof rampTransactions.$inferInsert;
 
-// @ts-expect-error
 const newTransactionsList: NewTransaction[] = result?.data.map(
   (transaction, i) => {
     const {

@@ -1,6 +1,5 @@
 {
   "name": "ramp_script",
-  "module": "index.ts",
   "type": "module",
   "scripts": {
     "main": "bun run index.ts"

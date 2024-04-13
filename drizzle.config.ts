@@ -13,5 +13,5 @@ export default {
     connectionString,
   },
   schemaFilter: ["accounting", "public"],
-  tablesFilter: ["ynab_transactions", "bills"],
+  tablesFilter: ["ynab_transactions", "bills", "ramp_transactions"],
 } satisfies Config;
