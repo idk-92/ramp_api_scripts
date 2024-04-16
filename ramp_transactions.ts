@@ -90,6 +90,7 @@ const newTransactionsList: NewTransaction[] = result?.data.map(
       memo,
       state,
       settlement_date,
+      accounting_categories,
     } = transaction;
 
     // Use the parsed transaction fields here
@@ -109,6 +110,9 @@ const newTransactionsList: NewTransaction[] = result?.data.map(
       settlementDate: settlement_date,
       locationName: card_holder.location_name,
       departmentName: card_holder.department_name,
+      accountingCategoryNames: accounting_categories.map(
+        (category: any) => category?.category_name
+      ),
     };
   }
 );
@@ -127,6 +131,10 @@ const batchInsertTransaction = async (trans: NewTransaction[]) => {
         merchantCategoryCodeDescription: sql`excluded.merchant_category_code_description`,
         merchantName: sql`excluded.merchant_name`,
         state: sql`excluded.state`,
+        merchantDescriptor: sql`excluded.merchant_descriptor`,
+        locationName: sql`excluded.location_name`,
+        // departmentName: sql`excluded.department_name`,
+        accountingCategoryNames: sql`excluded.accounting_category_names`,
       },
     });
 };

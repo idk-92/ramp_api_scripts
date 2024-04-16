@@ -80,6 +80,8 @@ export const rampTransactions = accounting.table("ramp_transactions", {
 	settlementDate: timestamp("settlement_date", { withTimezone: true, mode: 'string' }),
 	locationName: text("location_name"),
 	departmentName: text(" department_name"),
+	accountCategoryNames: text("account_category_names").array(),
+	accountingCategoryNames: text("accounting_category_names").array(),
 },
 (table) => {
 	return {
